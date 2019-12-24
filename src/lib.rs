@@ -204,11 +204,13 @@ impl FixedBitSet
     #[inline]
     pub fn set_range<T: IndexRange>(&mut self, range: T, enabled: bool)
     {
-        for (block, mask) in Masks::new(range, self.length) {
-            unsafe {
-                if enabled {
+        unsafe {
+            if enabled {
+                for (block, mask) in Masks::new(range, self.length) {
                     *self.data.get_unchecked_mut(block) |= mask;
-                } else {
+                }
+            } else {
+                for (block, mask) in Masks::new(range, self.length) {
                     *self.data.get_unchecked_mut(block) &= !mask;
                 }
             }
