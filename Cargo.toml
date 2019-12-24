@@ -11,6 +11,9 @@ repository = "https://github.com/bluss/fixedbitset"
 keywords = ["container", "data-structure", "bitvec", "bitset", "no_std"]
 categories = ["data-structures"]
 
+[dependencies]
+rand = "0.3"
+
 [features]
 std = []
 default = ["std"]

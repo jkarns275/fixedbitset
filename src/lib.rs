@@ -17,6 +17,9 @@
 
 #[cfg(not(feature = "std"))]
 extern crate alloc;
+
+extern crate rand;
+
 #[cfg(not(feature = "std"))]
 use alloc::{
     vec,
@@ -28,6 +31,7 @@ use core as std;
 
 mod range;
 
+use rand::Rng;
 use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Index};
 use std::cmp::{Ord, Ordering};
 use std::iter::{Chain, FromIterator};
@@ -217,6 +221,24 @@ impl FixedBitSet
         }
     }
 
+    ///
+    ///
+    ///
+    #[inline]
+    pub fn scramble_range<T: IndexRange, R: Rng>(&mut self, range: T, rng: &mut R) {
+        unsafe {
+            for (block, mask) in Masks::new(range, self.length) {
+                let rand: Block = rng.gen();
+                *self.data.get_unchecked_mut(block) = (mask & rand);
+            }
+        }
+    }
+
+    #[inline]
+    pub fn scramble<R: Rng>(&mut self, rng: &mut R) {
+        self.scramble_range(.., rng);
+    }
+    
     /// Enables every bit in the given range.
     ///
     /// Use `..` to make the whole bitset ones.
